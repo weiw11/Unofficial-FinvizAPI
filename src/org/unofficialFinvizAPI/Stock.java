@@ -1,97 +1,101 @@
-package org.finvizapi;
+package org.unofficialFinvizAPI;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
+import java.io.*;
 
 public class Stock {
+
+    //<editor-fold desc="Variables">
     public String symbol;
-    public String companyName;
-    public String sector;
-    public String industry;
-    public String geo;
-    public String statement;
-    public String index;
-    public double pe;
-    public double eps;
-    public String insiderOwn;
-    public String shsOutstand;
-    public String perfWeek;
-    public String marketCap;
-    public double forwardPE;
-    public double epsNextY;
-    public String insiderTrans;
-    public String shsFloat;
-    public String perfMonth;
-    public String income;
-    public double peg;
-    public double epsNextQ;
-    public String instOwn;
-    public String shortFloat;
-    public String perfQuarter;
-    public String sales;
-    public double ps;
-    public String epsThisYPercent;
-    public String instTrans;
-    public double shortRatio;
-    public String perfHalfY;
-    public double bookSh;
-    public double pb;
-    public String epsNextYPercent;
-    public String roa;
-    public double targetPrice;
-    public String perfYear;
-    public double cashSh;
-    public double pc;
-    public String epsNext5YPercent;
-    public String roe;
-    public String w52Range;
-    public String perfYTD;
-    public double dividend;
-    public double pfcf;
-    public String epsPast5YPercent;
-    public String roi;
-    public String w52High;
-    public double beta;
-    public String dividendPercent;
-    public double quickRatio;
-    public String salesPast5Y;
-    public String grossMargin;
-    public String w52Low;
-    public double atr;
-    public int employees;
-    public double currentRatio;
-    public String salesQQ;
-    public String operMargin;
-    public double rsi14;
-    public String volatility;
-    public String optionable;
-    public double debtEq;
-    public String epsQQ;
-    public String profitMargin;
-    public double relVolume;
-    public double prevClose;
-    public String shortable;
-    public double ltDebtEq;
-    public String earnings;
-    public String payout;
-    public String avgVolume;
-    public double price;
-    public double recom;
-    public String sma20;
-    public String sma50;
-    public String sma200;
-    public String volume;
-    public String change;
-    public String companyInfo;
+    private String companyName;
+    private String sector;
+    private String industry;
+    private String geo;
+    private String statement;
+    private String index;
+    private double pe;
+    private double eps;
+    private String insiderOwn;
+    private String shsOutstand;
+    private String perfWeek;
+    private String marketCap;
+    private double forwardPE;
+    private double epsNextY;
+    private String insiderTrans;
+    private String shsFloat;
+    private String perfMonth;
+    private String income;
+    private double peg;
+    private double epsNextQ;
+    private String instOwn;
+    private String shortFloat;
+    private String perfQuarter;
+    private String sales;
+    private double ps;
+    private String epsThisYPercent;
+    private String instTrans;
+    private double shortRatio;
+    private String perfHalfY;
+    private double bookSh;
+    private double pb;
+    private String epsNextYPercent;
+    private String roa;
+    private double targetPrice;
+    private String perfYear;
+    private double cashSh;
+    private double pc;
+    private String epsNext5YPercent;
+    private String roe;
+    private String w52Range;
+    private String perfYTD;
+    private double dividend;
+    private double pfcf;
+    private String epsPast5YPercent;
+    private String roi;
+    private String w52High;
+    private double beta;
+    private String dividendPercent;
+    private double quickRatio;
+    private String salesPast5Y;
+    private String grossMargin;
+    private String w52Low;
+    private double atr;
+    private int employees;
+    private double currentRatio;
+    private String salesQQ;
+    private String operMargin;
+    private double rsi14;
+    private String volatility;
+    private String optionable;
+    private double debtEq;
+    private String epsQQ;
+    private String profitMargin;
+    private double relVolume;
+    private double prevClose;
+    private String shortable;
+    private double ltDebtEq;
+    private String earnings;
+    private String payout;
+    private String avgVolume;
+    private double price;
+    private double recom;
+    private String sma20;
+    private String sma50;
+    private String sma200;
+    private String volume;
+    private String change;
+    private String companyInfo;
+    //</editor-fold>
 
     /**
      Retrieves stock symbol information from Finviz.
 
-     @param symbol    Symbol of the company
-     @return Stock
+     @param symbol  Symbol of the company
      */
     public Stock(String symbol) {
         Document doc = getStockInfo(symbol);
@@ -176,12 +180,13 @@ public class Stock {
             this.sma200 = elements.get(69).text();
             this.volume = elements.get(70).text();
             this.change = elements.get(71).text();
-            this.companyInfo = doc.select("td.fullview-profile").get(0).text();
+            this.companyInfo = wrapText(doc.select("td.fullview-profile").get(0).text());
         } else {
             throw new IllegalArgumentException("This symbol cannot be found");
         }
     }
 
+    //<editor-fold desc="Getters">
     public String getSymbol() {
         return symbol;
     }
@@ -497,6 +502,16 @@ public class Stock {
     public String getCompanyInfo() {
         return companyInfo;
     }
+    //</editor-fold>
+
+    private String wrapText(String input) {
+        StringBuilder sb = new StringBuilder(input);
+        int i = 0;
+        while (i + 100 < sb.length() && (i = sb.lastIndexOf(" ", i + 100)) != -1) {
+            sb.replace(i, i + 1, "\n");
+        }
+        return sb.toString();
+    }
 
     private Document getStockInfo(String symbol) {
         try {
@@ -507,6 +522,47 @@ public class Stock {
         }
     }
 
+    public String[] getStringArr() {
+        return new String[] {this.symbol, this.companyName, this.sector, this.industry, this.geo, this.statement, this.index, String.valueOf(this.pe), String.valueOf(this.eps), this.insiderOwn, this.shsOutstand, this.perfWeek, this.marketCap, String.valueOf(this.forwardPE), String.valueOf(this.epsNextY), this.insiderTrans, this.shsFloat, this.perfMonth, this.income, String.valueOf(this.peg), String.valueOf(this.epsNextQ), this.instOwn, this.shortFloat, this.perfQuarter, this.sales, String.valueOf(this.ps), this.epsThisYPercent, this.instTrans, String.valueOf(this.shortRatio), this.perfHalfY, String.valueOf(this.bookSh), String.valueOf(this.pb), this.epsNextYPercent, this.roa, String.valueOf(this.targetPrice), this.perfYear, String.valueOf(this.cashSh), String.valueOf(this.pc), this.epsNext5YPercent, this.roe, this.w52Range, this.perfYTD, String.valueOf(this.dividend), String.valueOf(this.pfcf), this.epsPast5YPercent, this.roi, this.w52High, String.valueOf(this.beta), this.dividendPercent, String.valueOf(this.quickRatio), this.salesPast5Y, this.grossMargin, this.w52Low, String.valueOf(this.atr), String.valueOf(this.employees), String.valueOf(this.currentRatio), this.salesQQ, this.operMargin, String.valueOf(this.rsi14), this.volatility, this.optionable, String.valueOf(this.debtEq), String.valueOf(this.epsQQ), this.profitMargin, String.valueOf(this.relVolume), String.valueOf(this.prevClose), this.shortable, String.valueOf(this.ltDebtEq), this.earnings, this.payout, this.avgVolume, String.valueOf(this.price), String.valueOf(this.recom), this.sma20, this.sma50, this.sma200, this.volume, this.change};
+    }
+
+    /**
+     Saves stock information to CSV file
+
+     @param filePath Absolute file path of CSV file
+     */
+    public void exportStockAsCSV(String filePath) {
+        File file = new File(filePath);
+        String[] header = new String[] {"Symbol", "Companyname", "Sector", "Industry", "Geo", "Statement", "Index", "Pe", "Eps", "Insiderown", "Shsoutstand", "Perfweek", "Marketcap", "Forwardpe", "Epsnexty", "Insidertrans", "Shsfloat", "Perfmonth", "Income", "Peg", "Epsnextq", "Instown", "Shortfloat", "Perfquarter", "Sales", "Ps", "Epsthisypercent", "Insttrans", "Shortratio", "Perfhalfy", "Booksh", "Pb", "Epsnextypercent", "Roa", "Targetprice", "Perfyear", "Cashsh", "Pc", "Epsnext5ypercent", "Roe", "52WRange", "Perfytd", "Dividend", "Pfcf", "Epspast5ypercent", "Roi", "52WHigh", "Beta", "Dividendpercent", "Quickratio", "Salespast5y", "Grossmargin", "52WLow", "Atr", "Employees", "Currentratio", "Salesqq", "Opermargin", "Rsi14", "Volatility", "Optionable", "Debteq", "Epsqq", "Profitmargin", "Relvolume", "Prevclose", "Shortable", "Ltdebteq", "Earnings", "Payout", "Avgvolume", "Price", "Recom", "Sma20", "Sma50", "Sma200", "Volume", "Change"};
+        try {
+            FileWriter outputFile = null;
+            CSVWriter writer = null;
+            if (file.exists()) {
+                outputFile = new FileWriter(file, true);
+                writer = new CSVWriter(outputFile);
+                FileReader readFile = new FileReader(file);
+                CSVReader reader = new CSVReader(readFile);
+                if (reader.readNext().length == 0) {
+                    writer.writeNext(header);
+                }
+                writer.writeNext(getStringArr());
+                readFile.close();
+                reader.close();
+            } else {
+                outputFile = new FileWriter(file);
+                writer = new CSVWriter(outputFile);
+                writer.writeNext(header);
+                writer.writeNext(getStringArr());
+            }
+            writer.close();
+            outputFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      Returns stock's information as string.
 
@@ -514,6 +570,6 @@ public class Stock {
      */
     @Override
     public String toString() {
-        return "Symbol: " + symbol + "\nCompany Name: " + companyName + "\nSector: " + sector + "\nIndustry: " + industry + "\nGeo: " + geo + "\nIndex: " + index + "\nP/E: " + pe + "\nEPS: " + eps + "\nInsider Ownership: " + insiderOwn + "\nShares Outstanding: " + shsOutstand + "\nPerf Week: " + perfWeek + "\nMarket Cap: " + marketCap + "\nForward P/E: " + forwardPE + "\nEPS Next Y: " + epsNextY + "\nInsider Trans: " + insiderTrans + "\nShares Float: " + shsFloat + "\nPerf Month: " + perfMonth + "\nIncome: " + income + "\nPEG: " + peg + "\nEPS Next Quarter: " + epsNextQ + "\nInstitutional Ownership: " + instOwn + "\nShort Float: " + shortFloat + "\nPerf Quarter: " + perfQuarter + "\nSales: " + sales + "\nPS: " + ps + "\nEPS This Year %: " + epsThisYPercent + "\nInstitutional Trans: " + instTrans + "\nShort Ratio: " + shortRatio + "\nPerf Half Y: " + perfHalfY + "\nBook/Share: " + bookSh + "\nP/B: " + pb + "\nEPS Next Y %: " + epsNextYPercent + "\nROA: " + roa + "\nTarget Price: " + targetPrice + "\nPerf Year: " + perfYear + "\nCash/Share: " + cashSh + "\nP/C: " + pc + "\nEPS Next 5 Year %: " + epsNext5YPercent + "\nROE: " + roe + "\n52 Week Range: " + w52Range + "\nPerf YTD: " + perfYTD + "\nDividend: " + dividend + "\nP/FCF: " + pfcf + "\nEPS Past 5 Y %: " + epsPast5YPercent + "\nROI: " + roi + "\n52 Week High: " + w52High + "\nBeta: " + beta + "\nDividend %: " + dividendPercent + "\nQuick Ratio: " + quickRatio + "\nSales Past 5 Y: " + salesPast5Y + "\nGross Margin: " + grossMargin + "\n52 Week Low: " + w52Low + "\nATR (14): " + atr + "\nEmployees: " + employees + "\nCurrent Ratio: " + currentRatio + "\nSales Q/Q: " + salesQQ + "\nOperating Margin: " + operMargin + "\nRSI (14): " + rsi14 + "\nVolatility: " + volatility + "\nOptionable: " + optionable + "\nDebt/Eq: " + debtEq + "\nEPS Q/Q: " + epsQQ + "\nProfit Margin: " + profitMargin + "\nRel Volume: " + relVolume + "\nPrevious Close: " + prevClose + "\nShortable: " + shortable + "\nLT Debt/Eq: " + ltDebtEq + "\nEarnings: " + earnings + "\nPayout: " + payout + "\nAvg Volume: " + avgVolume + "\nPrice: " + price + "\nRecome: " + recom + "\nSMA20: " + sma20 + "\nSMA50: " + sma50 + "\nSMA200: " + sma200 + "\nVolume: " + volume + "\nChange: " + change + "\n\nCompany Info: " + companyInfo;
+        return "Symbol: " + symbol + "\nCompany Name: " + companyName + "\nSector: " + sector + "\nIndustry: " + industry + "\nGeo: " + geo + "\nIndex: " + index + "\nP/E: " + pe + "\nEPS: " + eps + "\nInsider Ownership: " + insiderOwn + "\nShares Outstanding: " + shsOutstand + "\nPerf Week: " + perfWeek + "\nMarket Cap: " + marketCap + "\nForward P/E: " + forwardPE + "\nEPS Next Y: " + epsNextY + "\nInsider Trans: " + insiderTrans + "\nShares Float: " + shsFloat + "\nPerf Month: " + perfMonth + "\nIncome: " + income + "\nPEG: " + peg + "\nEPS Next Quarter: " + epsNextQ + "\nInstitutional Ownership: " + instOwn + "\nShort Float: " + shortFloat + "\nPerf Quarter: " + perfQuarter + "\nSales: " + sales + "\nPS: " + ps + "\nEPS This Year %: " + epsThisYPercent + "\nInstitutional Trans: " + instTrans + "\nShort Ratio: " + shortRatio + "\nPerf Half Y: " + perfHalfY + "\nBook/Share: " + bookSh + "\nP/B: " + pb + "\nEPS Next Y %: " + epsNextYPercent + "\nROA: " + roa + "\nTarget Price: " + targetPrice + "\nPerf Year: " + perfYear + "\nCash/Share: " + cashSh + "\nP/C: " + pc + "\nEPS Next 5 Year %: " + epsNext5YPercent + "\nROE: " + roe + "\n52 Week Range: " + w52Range + "\nPerf YTD: " + perfYTD + "\nDividend: " + dividend + "\nP/FCF: " + pfcf + "\nEPS Past 5 Y %: " + epsPast5YPercent + "\nROI: " + roi + "\n52 Week High: " + w52High + "\nBeta: " + beta + "\nDividend %: " + dividendPercent + "\nQuick Ratio: " + quickRatio + "\nSales Past 5 Y: " + salesPast5Y + "\nGross Margin: " + grossMargin + "\n52 Week Low: " + w52Low + "\nATR (14): " + atr + "\nEmployees: " + employees + "\nCurrent Ratio: " + currentRatio + "\nSales Q/Q: " + salesQQ + "\nOperating Margin: " + operMargin + "\nRSI (14): " + rsi14 + "\nVolatility: " + volatility + "\nOptionable: " + optionable + "\nDebt/Eq: " + debtEq + "\nEPS Q/Q: " + epsQQ + "\nProfit Margin: " + profitMargin + "\nRel Volume: " + relVolume + "\nPrevious Close: " + prevClose + "\nShortable: " + shortable + "\nLT Debt/Eq: " + ltDebtEq + "\nEarnings: " + earnings + "\nPayout: " + payout + "\nAvg Volume: " + avgVolume + "\nPrice: " + price + "\nRecome: " + recom + "\nSMA20: " + sma20 + "\nSMA50: " + sma50 + "\nSMA200: " + sma200 + "\nVolume: " + volume + "\nChange: " + change + "\n\nCompany Info: \n" + companyInfo;
     }
 }
