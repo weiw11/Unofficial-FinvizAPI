@@ -92,9 +92,14 @@ public class Stock {
     //</editor-fold>
 
     /**
-     Retrieves stock symbol information from Finviz.
-
-     @param symbol  Symbol of the company
+     * Retrieves stock symbol information from Finviz.
+     * <br>
+     * {@code
+     * Stock stock = new Stock("MSFT");
+     * }
+     *
+     * @param symbol Symbol of the company
+     * @exception IOException When symbol cannot be found on Finviz
      */
     public Stock(String symbol) throws IOException {
         Document doc = getStockInfo(symbol);
@@ -511,6 +516,9 @@ public class Stock {
         return Jsoup.connect("https://finviz.com/quote.ashx?t=" + symbol).get();
     }
 
+    /**
+     * @return All stock variables
+     */
     public String[] getStringArr() {
         return new String[] {
             this.symbol, this.companyName, this.sector, this.industry, this.geo, this.index, this.pe, this.eps,
@@ -527,22 +535,25 @@ public class Stock {
             this.change};
     }
 
-    /**
-     Saves stock information to CSV file
 
-     @param filePath Absolute file path of CSV file
+    /**
+     *  Saves stock information to CSV file
+     *
+     *  @param filePath Absolute file path of CSV file
      */
     public void exportStockAsCSV(String filePath) {
         File file = new File(filePath);
-        String[] header = new String[] {"Symbol", "Companyname", "Sector", "Industry", "Geo", "Statement", "Index",
-        "Pe", "Eps", "Insiderown", "Shsoutstand", "Perfweek", "Marketcap", "Forwardpe", "Epsnexty", "Insidertrans",
-        "Shsfloat", "Perfmonth", "Income", "Peg", "Epsnextq", "Instown", "Shortfloat", "Perfquarter", "Sales", "Ps",
-        "Epsthisypercent", "Insttrans", "Shortratio", "Perfhalfy", "Booksh", "Pb", "Epsnextypercent", "Roa",
-        "Targetprice", "Perfyear", "Cashsh", "Pc", "Epsnext5ypercent", "Roe", "52WRange", "Perfytd", "Dividend", "Pfcf",
-        "Epspast5ypercent", "Roi", "52WHigh", "Beta", "Dividendpercent", "Quickratio", "Salespast5y", "Grossmargin",
-        "52WLow", "Atr", "Employees", "Currentratio", "Salesqq", "Opermargin", "Rsi14", "Volatility", "Optionable",
-        "Debteq", "Epsqq", "Profitmargin", "Relvolume", "Prevclose", "Shortable", "Ltdebteq", "Earnings", "Payout",
-        "Avgvolume", "Price", "Recom", "Sma20", "Sma50", "Sma200", "Volume", "Change"};
+        String[] header = new String[] {
+            "Symbol", "Companyname", "Sector", "Industry", "Geo", "Index", "Pe", "Eps", "Insiderown", "Shsoutstand",
+            "Perfweek", "Marketcap", "Forwardpe", "Epsnexty", "Insidertrans", "Shsfloat", "Perfmonth", "Income", "Peg",
+            "Epsnextq", "Instown", "Shortfloat", "Perfquarter", "Sales", "Ps", "Epsthisypercent", "Insttrans",
+            "Shortratio", "Perfhalfy", "Booksh", "Pb", "Epsnextypercent", "Roa", "Targetprice", "Perfyear", "Cashsh",
+            "Pc", "Epsnext5ypercent", "Roe", "52WRange", "Perfytd", "Dividend", "Pfcf", "Epspast5ypercent", "Roi",
+            "52WHigh", "Beta", "Dividendpercent", "Quickratio", "Salespast5y", "Grossmargin", "52WLow", "Atr",
+            "Employees", "Currentratio", "Salesqq", "Opermargin", "Rsi14", "Volatility", "Optionable", "Debteq",
+            "Epsqq", "Profitmargin", "Relvolume", "Prevclose", "Shortable", "Ltdebteq", "Earnings", "Payout",
+            "Avgvolume", "Price", "Recom", "Sma20", "Sma50", "Sma200", "Volume", "Change"
+        };
         try {
             FileWriter outputFile;
             CSVWriter writer;
@@ -571,9 +582,7 @@ public class Stock {
     }
 
     /**
-     Returns stock's information as string.
-
-     @return String
+     *  @return All stock variables
      */
     @Override
     public String toString() {

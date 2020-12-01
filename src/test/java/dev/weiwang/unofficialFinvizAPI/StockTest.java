@@ -1,7 +1,6 @@
 package dev.weiwang.unofficialFinvizAPI;
 
 import org.junit.*;
-import dev.weiwang.unofficialFinvizAPI.Stock;
 
 import java.io.IOException;
 
