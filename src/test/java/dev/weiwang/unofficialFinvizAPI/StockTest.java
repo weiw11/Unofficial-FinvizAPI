@@ -1,11 +1,13 @@
 package dev.weiwang.unofficialFinvizAPI;
 
+import dev.weiwang.unofficialFinvizAPI.util.StocksUtilities;
 import org.junit.*;
 
 import java.io.IOException;
 
 public class StockTest {
-    Stock stock;
+    private Stock stock;
+    private String outputFileCSV = "target/test-classes/test-results/output.csv";
 
     @BeforeClass
     public static void setUpClass() {
@@ -17,7 +19,7 @@ public class StockTest {
 
     @Before
     public void setUp() throws IOException {
-        stock = new Stock("AAPL");
+        stock = new Stock("MSFT");
     }
 
     @After
@@ -30,6 +32,11 @@ public class StockTest {
         System.out.println(
             "Stock Price: " + stock.getPrice() + "\n" + // Stock price
             "Stock Dividend: " + stock.getDividend() + "\n" + // Stock dividend yield
-            "Stock String Output: " + stock.toString()); // Outputs all data as string
+            "\nStock String Output: " + stock.toString()); // Outputs all data as string
+    }
+
+    @Test
+    public void outputTest() {
+        StocksUtilities.outputToCSV(stock, outputFileCSV);
     }
 }

@@ -1,7 +1,5 @@
 package dev.weiwang.unofficialFinvizAPI;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -11,7 +9,7 @@ import java.io.*;
 public class Stock {
 
     //<editor-fold desc="Variables">
-    private String symbol;
+    private String ticker;
     private String companyName;
     private String sector;
     private String industry;
@@ -92,20 +90,19 @@ public class Stock {
     //</editor-fold>
 
     /**
-     * Retrieves stock symbol information from Finviz.
+     * Retrieves stock ticker information from Finviz.
      * <br>
      * {@code
-     * Stock stock = new Stock("MSFT");
+     *     Stock stock = new Stock("MSFT");
      * }
-     *
-     * @param symbol Symbol of the company
-     * @exception IOException When symbol cannot be found on Finviz
+     * @param ticker ticker of the company
+     * @exception IOException when ticker cannot be found on Finviz
      */
-    public Stock(String symbol) throws IOException {
-        Document doc = getStockInfo(symbol);
+    public Stock(String ticker) throws IOException {
+        Document doc = getStockInfo(ticker);
         if (doc.getElementById("ticker") != null) {
             Elements elements = doc.select("a.tab-link");
-            this.symbol = doc.getElementById("ticker").text();
+            this.ticker = doc.getElementById("ticker").text();
             this.companyName = elements.get(12).text();
             this.sector = elements.get(13).text();
             this.industry = elements.get(14).text();
@@ -185,13 +182,13 @@ public class Stock {
             this.change = elements.get(71).text();
             this.companyInfo = wrapText(doc.select("td.fullview-profile").get(0).text());
         } else {
-            throw new Error("This symbol cannot be found");
+            throw new Error("This ticker cannot be found");
         }
     }
 
     //<editor-fold desc="Getters">
-    public String getSymbol() {
-        return symbol;
+    public String getTicker() {
+        return ticker;
     }
 
     public String getCompanyName() {
@@ -512,16 +509,16 @@ public class Stock {
         return sb.toString();
     }
 
-    private Document getStockInfo(String symbol) throws IOException {
-        return Jsoup.connect("https://finviz.com/quote.ashx?t=" + symbol).get();
+    private Document getStockInfo(String ticker) throws IOException {
+        return Jsoup.connect("https://finviz.com/quote.ashx?t=" + ticker).get();
     }
 
     /**
-     * @return All stock variables
+     * @return all stock variables as String[]
      */
     public String[] getStringArr() {
         return new String[] {
-            this.symbol, this.companyName, this.sector, this.industry, this.geo, this.index, this.pe, this.eps,
+            this.ticker, this.companyName, this.sector, this.industry, this.geo, this.index, this.pe, this.eps,
             this.insiderOwn, this.shsOutstand, this.perfWeek, this.marketCap, this.forwardPE, this.epsNextY,
             this.insiderTrans, this.shsFloat, this.perfMonth, this.income, this.peg, this.epsNextQ, this.instOwn,
             this.shortFloat, this.perfQuarter, this.sales, this.ps, this.epsThisYPercent, this.instTrans,
@@ -535,58 +532,13 @@ public class Stock {
             this.change};
     }
 
-
     /**
-     *  Saves stock information to CSV file
-     *
-     *  @param filePath Absolute file path of CSV file
-     */
-    public void exportStockAsCSV(String filePath) {
-        File file = new File(filePath);
-        String[] header = new String[] {
-            "Symbol", "Companyname", "Sector", "Industry", "Geo", "Index", "Pe", "Eps", "Insiderown", "Shsoutstand",
-            "Perfweek", "Marketcap", "Forwardpe", "Epsnexty", "Insidertrans", "Shsfloat", "Perfmonth", "Income", "Peg",
-            "Epsnextq", "Instown", "Shortfloat", "Perfquarter", "Sales", "Ps", "Epsthisypercent", "Insttrans",
-            "Shortratio", "Perfhalfy", "Booksh", "Pb", "Epsnextypercent", "Roa", "Targetprice", "Perfyear", "Cashsh",
-            "Pc", "Epsnext5ypercent", "Roe", "52WRange", "Perfytd", "Dividend", "Pfcf", "Epspast5ypercent", "Roi",
-            "52WHigh", "Beta", "Dividendpercent", "Quickratio", "Salespast5y", "Grossmargin", "52WLow", "Atr",
-            "Employees", "Currentratio", "Salesqq", "Opermargin", "Rsi14", "Volatility", "Optionable", "Debteq",
-            "Epsqq", "Profitmargin", "Relvolume", "Prevclose", "Shortable", "Ltdebteq", "Earnings", "Payout",
-            "Avgvolume", "Price", "Recom", "Sma20", "Sma50", "Sma200", "Volume", "Change"
-        };
-        try {
-            FileWriter outputFile;
-            CSVWriter writer;
-            if (file.exists()) {
-                outputFile = new FileWriter(file, true);
-                writer = new CSVWriter(outputFile);
-                FileReader readFile = new FileReader(file);
-                CSVReader reader = new CSVReader(readFile);
-                if (reader.readNext().length == 0) {
-                    writer.writeNext(header);
-                }
-                writer.writeNext(getStringArr());
-                readFile.close();
-                reader.close();
-            } else {
-                outputFile = new FileWriter(file);
-                writer = new CSVWriter(outputFile);
-                writer.writeNext(header);
-                writer.writeNext(getStringArr());
-            }
-            writer.close();
-            outputFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *  @return All stock variables
+     *  @return all stock variables
      */
     @Override
     public String toString() {
-        return "\nSymbol: " + symbol +
+        return
+                "\nTicker: " + ticker +
                 "\nCompany Name: " + companyName +
                 "\nSector: " + sector +
                 "\nIndustry: " + industry +

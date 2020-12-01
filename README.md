@@ -2,26 +2,52 @@
 This API uses gsoup to pull stock data from Finviz
 
 ### Usage
-You can pull all of the data from the table using the methods from the Stock class.
+You can pull all the data from the table using the methods from the Stock or Stocks class.
 
-Example:
+Stock Example:
 
 ```
 // Using MSFT data: https://finviz.com/quote.ashx?t=msft
 Stock stock = new Stock("MSFT");
 
-stock.getPrice(); // for price
-stock.getDividend(); // dividend yield
+stock.getPrice(); // For price
+stock.getDividend(); // Dividend yield
 
 stock.getStringArr(); // Returns all data as string array. Usefull for exporting
 
 stock.toString(); // Outputs all data as string
 ```
 
+Stocks Example:
+```
+// Multiple Stocks data
+Stocks stocks1 = new Stocks("AAPL", "MSFT", "TSLA", ...);
+
+// or using a text file with each ticker on a new line
+// Example file:
+// MSFT
+// AAPL
+Stocks stocks2 = new Stocks("inputfile.txt"); // Will throw IOException if passing single ticker as it checks for "."
+
+// Adding more stocks after creating variable
+stocks.addStock(new Stock("WMT")); // For single
+stocks.addStocks(new Stock("WORK"), new Stock("SPY"), ...); // for multiple
+
+```
+
+StockUtilities Example:
+```
+// Exporting to CSV file
+StocksUtilities.outputToCSV(stock, "absolutefilepath.csv");
+
+// Example Passing stocks
+StocksUtilities.outputToCSV(stocks, System.getProperty("user.home") + "/Desktop/output.csv"); // Will export stock to desktop in output.csv file
+```
+
 
 ```
 // Output of stock.toString():
-Symbol: MSFT
+Ticker: MSFT
 Company Name: Microsoft Corporation
 Sector: Technology
 Industry: Software - Infrastructure
