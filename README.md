@@ -6,7 +6,7 @@ You can pull all the data from the table using the methods from the Stock or Sto
 
 Stock Example:
 
-```
+```java
 // Using MSFT data: https://finviz.com/quote.ashx?t=msft
 Stock stock = new Stock("MSFT");
 
@@ -19,7 +19,7 @@ stock.toString(); // Outputs all data as string
 ```
 
 Stocks Example:
-```
+```java
 // Multiple Stocks data
 Stocks stocks1 = new Stocks("AAPL", "MSFT", "TSLA", ...);
 
@@ -36,7 +36,7 @@ stocks.addStocks(new Stock("WORK"), new Stock("SPY"), ...); // for multiple
 ```
 
 StockUtilities Example:
-```
+```java
 // Exporting to CSV file
 StocksUtilities.outputToCSV(stock, "absolutefilepath.csv");
 
