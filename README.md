@@ -1,5 +1,5 @@
 # FinvizAPI
-This API uses gsoup to pull stock data from Finviz
+This API uses jsoup to pull stock data from Finviz
 
 ### Usage
 You can pull all the data from the table using the methods from the Stock or Stocks class.
